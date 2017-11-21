@@ -50,8 +50,8 @@ ORDER BY buffer_fac_order.xDt DESC LIMIT 1";
 			function gotoUrl(xLink,DueDate,FN) {
 				location.href = xLink+"?xDate="+DueDate+"&FN="+FN;
 			}
-			function getDateNow(xLink,xUrl,DueDate,flag) {
-				location.href = xLink + "?xDate="+DueDate.substring(0, 10)+"&xUrl="+xUrl+"&flag="+flag;
+			function getDateNow(xLink,xUrl,DueDate,Fl) {
+				location.href = xLink + "?xDate="+DueDate.substring(0, 10)+"&xUrl="+xUrl+"&Fl="+Fl;
 			}
 		</script>
 	</head>
@@ -66,10 +66,10 @@ ORDER BY buffer_fac_order.xDt DESC LIMIT 1";
 
 <div data-role="content">
 		<ul data-role="listview" data-inset="true">
-        	<li><a style="color:#FE9A2E" href="#" onClick='getDateNow("Customer_1.php","monitor_stock_menu.php","<?=$xDate?>","");'><img src="images/mobile_menu.png" class="ui-li-icon">รายการคงเหลือสินค้าคลัง (บจก./หจก.)</a></li>
-            <li><a style="color:#009900" href="#" onClick='getDateNow("m3_1.php","monitor_stock_menu.php","<?=$xDate?>","daily");'><img src="images/mobile_menu.png" class="ui-li-icon">รายการสั่งซื้อ (บจก./หจก.)</a></li>
-            <li><a style="color:#FE2E2E" href="#" onClick='getDateNow("m7_1.php","monitor_stock_menu.php","<?=$xDate?>","");'><img src="images/mobile_menu.png" class="ui-li-icon">รายการบันทึกรับ (บจก./หจก.)</a></li>
-            <li><a style="color:#0195c8" href="#" onclick="gotoUrl('fai_suborder.php','','')"><img src="images/mobile_menu.png" class="ui-li-icon">รายการบันทึกเบิก (บจก./หจก.)</a></li>
+        	  <li><a style="color:#FE9A2E" href="#" onClick='getDateNow("inventory.php","monitor_stock_menu.php","<?=$xDate?>","3");'><img src="images/warehouse-inventory.png" class="ui-li-icon">รายการคงเหลือสินค้าคลัง (บจก./หจก.)</a></li>
+            <li><a style="color:#009900" href="#" onClick='getDateNow("m3_1.php","monitor_stock_menu.php","<?=$xDate?>","daily");'><img src="images/warehouse-inventory.png" class="ui-li-icon">รายการสั่งซื้อ (บจก./หจก.)</a></li>
+            <li><a style="color:#FE2E2E" href="#" onClick='getDateNow("m7_1.php","monitor_stock_menu.php","<?=$xDate?>","");'><img src="images/warehouse-inventory.png" class="ui-li-icon">รายการบันทึกรับ (บจก./หจก.)</a></li>
+            <li><a style="color:#0195c8" href="#" onclick="gotoUrl('fai_suborder.php','','')"><img src="images/warehouse-inventory.png" class="ui-li-icon">รายการบันทึกเบิก (บจก./หจก.)</a></li>
 
 		</ul>
 
