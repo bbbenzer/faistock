@@ -70,7 +70,7 @@ if(isset($_REQUEST["Fl"]))
 		<div data-role="header">
 			<a href="#" onClick='gotoMenu("<?=$xUrl?>","<?=$eDate?>");' class="ui-btn-left ui-btn ui-btn-b ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-circle-triangle-w ui-icon-carat-l">Back</a>
             		<h1>รายการบันทึกรับ (บจก./หจก.)</h1>
-			<a href="#" onClick='gotoNewUrl("receive_print.php","<?=$eDate?>","<?=$Fl?>");' class="ui-btn-right ui-btn ui-btn-b ui-btn-inline ui-mini  ui-btn-icon-right ui-icon-grid">Print ล่วงหน้า 1 วัน</a>
+			<a href="#" onClick='gotoNewUrl("receive_print.php","<?=$eDate?>","<?=$Fl?>");' class="ui-btn-right ui-btn ui-btn-b ui-btn-inline ui-mini  ui-btn-icon-right ui-icon-grid">Print</a>
 
 		</div>
 	</div>
