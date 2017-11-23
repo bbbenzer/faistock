@@ -18,7 +18,7 @@ if(isset($_REQUEST["Fl"]))
 {
 	$Fl = $_REQUEST["Fl"];
 }else {
-	$Fl = 3;
+	$Fl = 1;
 }
 
 ?>
@@ -53,11 +53,11 @@ if(isset($_REQUEST["Fl"]))
   <center><b style="font-size: 24">
     <?php if($Fl==1)
     {
-      echo "ใบรายการคงเหลือสินค้าคลัง (บจก.)";
+      echo "ใบรายการสั่งซื้อ (บจก.)";
     }elseif ($Fl==2) {
-      echo "ใบรายการคงเหลือสินค้าคลัง (หจก.)";
+      echo "ใบรายการสั่งซื้อ (หจก.)";
     }else {
-      echo "ใบรายการคงเหลือสินค้าคลัง (สต๊อกน้ำ)";
+      echo "ใบรายการสั่งซื้อ (สต๊อกน้ำ)";
     }?>
   </b>
   <br>389/2 หมู 5 ต.ยางเนิ้ง อ.สารภี เชียงใหม 50140
@@ -77,69 +77,63 @@ if(isset($_REQUEST["Fl"]))
     <table data-role="table" class="table table-sm" style="font-size: 11" border="1" >
 			<thead>
 				<tr>
-           <th  style="vertical-align: middle;" width="50px">ลำดับ</th>
-           <th  style="vertical-align: middle;" width="150px">Barcode</th>
-					 <th  style="vertical-align: middle;" width="600px">รายการสินค้า</th>
-           <th  style="vertical-align: middle;" width="100px">หน่วยนับ</th>
-					 <th  style="vertical-align: middle;" width="100px">ราคา</th>
-           <th  style="vertical-align: middle;" width="150px">จำนวนคงเหลือ</th>
-           <th  style="vertical-align: middle;" width="100px">Lot</th>
-           <th  style="vertical-align: middle;" width="10%">วันที่ผลิต</th>
-           <th  style="vertical-align: middle;" width="10%">วันที่หมดอายุ</th>
+          <th  style="vertical-align: middle;" width="50px" data-priority="2">ลำดับ</th>
+          <th  style="vertical-align: middle;" width="10%" data-priority="2">วันที่</th>
+          <th  style="vertical-align: middle;" width="150px" data-priority="2">Barcode</th>
+          <th  style="vertical-align: middle;" width="600px" data-priority="2">รายการสินค้า</th>
+          <th  style="vertical-align: middle;" width="100px" data-priority="2">หน่วยนับ</th>
+          <th  style="vertical-align: middle;" width="100px" data-priority="2">ราคา</th>
+          <th  style="vertical-align: middle;" width="150px" data-priority="2">จำนวน</th>
 				</tr>
 			</thead>
 			<tbody>
 
-			<?
-				$Sql = "SELECT item.Barcode,
+        <?
+        $Sql = "SELECT purchaseorder.DocNo,item.Barcode,
+                purchaseorder.DocDate,
                 item.Item_Code,
                 item.NameTH,
-                wh_inventory.Qty,
+                purchaseorder_detail.Qty,
                 item_unit.Unit_Name,
                 item.SalePrice,
-                wh_inventory.LotNo,
-                wh_inventory.MFGDate,
-                wh_inventory.EXPDate,
                 branch.Branch_Name
                 FROM item
-                INNER JOIN wh_inventory ON wh_inventory.Item_Code = item.Item_Code
+                INNER JOIN purchaseorder_detail ON purchaseorder_detail.Item_Code = item.Item_Code
+                INNER JOIN purchaseorder ON purchaseorder.DocNo = purchaseorder_detail.DocNo
                 INNER JOIN item_unit ON item_unit.Unit_Code = item.Unit_Code
-                INNER JOIN branch ON branch.Branch_Code = wh_inventory.Branch_Code
-                WHERE wh_inventory.Qty > 0";
+                INNER JOIN branch ON branch.Branch_Code = purchaseorder_detail.Branch_Code
+                WHERE purchaseorder_detail.Qty > 0 ";
 
                 if($Fl==1){
-                  $Sql .= " AND wh_inventory.Branch_Code = 5 ";
+                  $Sql .= " AND purchaseorder_detail.Branch_Code = 5 ";
                 }elseif ($Fl==2) {
-                  $Sql .= " AND wh_inventory.Branch_Code = 6 ";
+                  $Sql .= " AND purchaseorder_detail.Branch_Code = 6 ";
                 }else {
-                  $Sql .= " AND wh_inventory.Branch_Code = 3 ";
+                  $Sql .= "AND purchaseorder_detail.Branch_Code = 3 ";
                 }
 
-
-                $Sql .= " ORDER BY branch.Branch_Code,item.NameTH ASC";
-						          //var_dump($Sql);
-				$row = 1;
-				$meQuery = mysql_query( $Sql );
-    			while ($Result = mysql_fetch_assoc($meQuery)){
-			?>
-				<tr>
-					<td style="vertical-align: middle;" width="50px"><?=$row?></td>
+                $Sql .= " ORDER BY purchaseorder.DocDate DESC LIMIT 100";
+                //var_dump($Sql);
+        $row = 1;
+        $meQuery = mysql_query( $Sql );
+          while ($Result = mysql_fetch_assoc($meQuery)){
+      ?>
+        <tr>
+          <td style="vertical-align: middle;" width="50px"><?=$row?></td>
+          <td style="vertical-align: middle;" width="100px"><?=$Result["DocDate"]?></td>
           <td style="vertical-align: middle;" width="150px"><?=$Result["Barcode"]?></td>
-					<td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
+          <td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["Unit_Name"]?></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["SalePrice"]?></td>
-					<td style="vertical-align: middle;" width="150px"><?=(int)$Result["Qty"]?></td>
-          <td style="vertical-align: middle;" width="100px"><?=$Result["LotNo"]?></td>
-          <td style="vertical-align: middle;" width="10%"><?=$Result["MFGDate"]?></td>
-          <td style="vertical-align: middle;" width="10%"><?=$Result["EXPDate"]?></td>
-				</tr>
-			<?
-				$row++;
+          <td style="vertical-align: middle;" width="150px"><?=(int)$Result["Qty"]?></td>
+        </tr>
+      <?
+        $row++;
 
-				}
-			?>
+        }
+      ?>
 
-			</tbody>
+      </tbody>
 		</table>
   </center>
 </body>

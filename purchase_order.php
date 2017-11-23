@@ -69,8 +69,8 @@ if(isset($_REQUEST["Fl"]))
  	<div data-demo-html="true">
 		<div data-role="header">
 			<a href="#" onClick='gotoMenu("<?=$xUrl?>","<?=$eDate?>");' class="ui-btn-left ui-btn ui-btn-b ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-circle-triangle-w ui-icon-carat-l">Back</a>
-            		<h1>รายการคงเหลือสินค้าคลัง (บจก./หจก.)</h1>
-			<a href="#" onClick='gotoNewUrl("inventory_print.php","<?=$eDate?>","<?=$Fl?>");' class="ui-btn-right ui-btn ui-btn-b ui-btn-inline ui-mini  ui-btn-icon-right ui-icon-grid">Print ล่วงหน้า 1 วัน</a>
+            		<h1>รายการสั่งซื้อ (บจก./หจก.)</h1>
+			<a href="#" onClick='gotoNewUrl("purchase_order_print.php","<?=$eDate?>","<?=$Fl?>");' class="ui-btn-right ui-btn ui-btn-b ui-btn-inline ui-mini  ui-btn-icon-right ui-icon-grid">Print ล่วงหน้า 1 วัน</a>
 
 		</div>
 	</div>
@@ -80,21 +80,21 @@ if(isset($_REQUEST["Fl"]))
 			 ที่ <?=date('d',strtotime($eDate));?> เดือน <?=$dateobj->getTHmonth(date('F',strtotime($eDate)));?> พ.ศ. <?=$dateobj->getTHyear(date('Y',strtotime($eDate)));?> </b></div>
        <br>
        <fieldset data-role="controlgroup" data-type="horizontal">
-		 <?php if($Fl==1){
-			?> <legend>เลือกประเภท : บจก.</legend> <?php
-		 }elseif ($Fl==2) {
-			?> <legend>เลือกประเภท : หจก.</legend> <?php
-		 }else {
-			?> <legend>เลือกประเภท : สต๊อกน้ำ</legend> <?php
-		 } ?>
+				 <?php if($Fl==1){
+					?> <legend>เลือกประเภท : บจก.</legend> <?php
+				 }elseif ($Fl==2) {
+					?> <legend>เลือกประเภท : หจก.</legend> <?php
+				 }else {
+					?> <legend>เลือกประเภท : สต๊อกน้ำ</legend> <?php
+				 } ?>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2a" value="on"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",1,"<?=$xUrl?>");'>
+     onClick='gotoFilter("purchase_order.php","<?=$eDate?>",1,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2a">บจก.</label>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2b" value="off"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",2,"<?=$xUrl?>");'>
+     onClick='gotoFilter("purchase_order.php","<?=$eDate?>",2,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2b">หจก.</label>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2c" value="off"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",3,"<?=$xUrl?>");'>
+     onClick='gotoFilter("purchase_order.php","<?=$eDate?>",3,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2c">สต๊อกน้ำ</label>
          </fieldset>
 
@@ -102,60 +102,54 @@ if(isset($_REQUEST["Fl"]))
 			<thead style='display:block;'>
 				<tr class="ui-bar-d">
            <th  style="vertical-align: middle;" width="50px" data-priority="2">ลำดับ</th>
+					 <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่</th>
            <th  style="vertical-align: middle;" width="150px" data-priority="2">Barcode</th>
 					 <th  style="vertical-align: middle;" width="600px" data-priority="2">รายการสินค้า</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">หน่วยนับ</th>
 					 <th  style="vertical-align: middle;" width="100px" data-priority="2">ราคา</th>
-           <th  style="vertical-align: middle;" width="150px" data-priority="2">จำนวนคงเหลือ</th>
-           <th  style="vertical-align: middle;" width="100px" data-priority="2">Lot</th>
-           <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่ผลิต</th>
-           <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่หมดอายุ</th>
+           <th  style="vertical-align: middle;" width="150px" data-priority="2">จำนวน</th>
 				</tr>
 			</thead>
 			<tbody style='height:400px;display:block;overflow:scroll'>
 
 			<?
-				$Sql = "SELECT item.Barcode,
+				$Sql = "SELECT purchaseorder.DocNo,item.Barcode,
+								purchaseorder.DocDate,
                 item.Item_Code,
                 item.NameTH,
-                wh_inventory.Qty,
+                purchaseorder_detail.Qty,
                 item_unit.Unit_Name,
                 item.SalePrice,
-                wh_inventory.LotNo,
-                wh_inventory.MFGDate,
-                wh_inventory.EXPDate,
                 branch.Branch_Name
                 FROM item
-                INNER JOIN wh_inventory ON wh_inventory.Item_Code = item.Item_Code
+                INNER JOIN purchaseorder_detail ON purchaseorder_detail.Item_Code = item.Item_Code
+                INNER JOIN purchaseorder ON purchaseorder.DocNo = purchaseorder_detail.DocNo
                 INNER JOIN item_unit ON item_unit.Unit_Code = item.Unit_Code
-                INNER JOIN branch ON branch.Branch_Code = wh_inventory.Branch_Code
-                WHERE wh_inventory.Qty > 0";
+                INNER JOIN branch ON branch.Branch_Code = purchaseorder_detail.Branch_Code
+                WHERE purchaseorder_detail.Qty > 0 ";
 
                 if($Fl==1){
-                  $Sql .= " AND wh_inventory.Branch_Code = 5 ";
+                  $Sql .= " AND purchaseorder_detail.Branch_Code = 5 ";
                 }elseif ($Fl==2) {
-                  $Sql .= " AND wh_inventory.Branch_Code = 6 ";
+                  $Sql .= " AND purchaseorder_detail.Branch_Code = 6 ";
                 }else {
-                  $Sql .= " AND wh_inventory.Branch_Code = 3 ";
+                  $Sql .= "AND purchaseorder_detail.Branch_Code = 3 ";
                 }
 
-
-                $Sql .= " ORDER BY branch.Branch_Code,item.NameTH ASC";
-						          //var_dump($Sql);
+                $Sql .= " ORDER BY purchaseorder.DocDate DESC LIMIT 100";
+						    //var_dump($Sql);
 				$row = 1;
 				$meQuery = mysql_query( $Sql );
     			while ($Result = mysql_fetch_assoc($meQuery)){
 			?>
 				<tr>
 					<td style="vertical-align: middle;" width="50px"><?=$row?></td>
+					<td style="vertical-align: middle;" width="100px"><?=$Result["DocDate"]?></td>
           <td style="vertical-align: middle;" width="150px"><?=$Result["Barcode"]?></td>
 					<td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["Unit_Name"]?></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["SalePrice"]?></td>
 					<td style="vertical-align: middle;" width="150px"><?=(int)$Result["Qty"]?></td>
-          <td style="vertical-align: middle;" width="100px"><?=$Result["LotNo"]?></td>
-          <td style="vertical-align: middle;" width="100px"><?=$Result["MFGDate"]?></td>
-          <td style="vertical-align: middle;" width="100px"><?=$Result["EXPDate"]?></td>
 				</tr>
 			<?
 				$row++;

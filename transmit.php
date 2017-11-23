@@ -69,7 +69,7 @@ if(isset($_REQUEST["Fl"]))
  	<div data-demo-html="true">
 		<div data-role="header">
 			<a href="#" onClick='gotoMenu("<?=$xUrl?>","<?=$eDate?>");' class="ui-btn-left ui-btn ui-btn-b ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-circle-triangle-w ui-icon-carat-l">Back</a>
-            		<h1>รายการคงเหลือสินค้าคลัง (บจก./หจก.)</h1>
+            		<h1>รายการบันทึกเบิก (บจก./หจก.)</h1>
 			<a href="#" onClick='gotoNewUrl("inventory_print.php","<?=$eDate?>","<?=$Fl?>");' class="ui-btn-right ui-btn ui-btn-b ui-btn-inline ui-mini  ui-btn-icon-right ui-icon-grid">Print ล่วงหน้า 1 วัน</a>
 
 		</div>
@@ -88,13 +88,13 @@ if(isset($_REQUEST["Fl"]))
 			?> <legend>เลือกประเภท : สต๊อกน้ำ</legend> <?php
 		 } ?>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2a" value="on"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",1,"<?=$xUrl?>");'>
+     onClick='gotoFilter("transmit.php","<?=$eDate?>",1,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2a">บจก.</label>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2b" value="off"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",2,"<?=$xUrl?>");'>
+     onClick='gotoFilter("transmit.php","<?=$eDate?>",2,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2b">หจก.</label>
              <input type="radio" name="radio-choice-h-2" id="radio-choice-h-2c" value="off"
-     onClick='gotoFilter("inventory.php","<?=$eDate?>",3,"<?=$xUrl?>");'>
+     onClick='gotoFilter("transmit.php","<?=$eDate?>",3,"<?=$xUrl?>");'>
              <label for="radio-choice-h-2c">สต๊อกน้ำ</label>
          </fieldset>
 
@@ -106,7 +106,7 @@ if(isset($_REQUEST["Fl"]))
 					 <th  style="vertical-align: middle;" width="600px" data-priority="2">รายการสินค้า</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">หน่วยนับ</th>
 					 <th  style="vertical-align: middle;" width="100px" data-priority="2">ราคา</th>
-           <th  style="vertical-align: middle;" width="150px" data-priority="2">จำนวนคงเหลือ</th>
+           <th  style="vertical-align: middle;" width="150px" data-priority="2">จำนวน</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">Lot</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่ผลิต</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่หมดอายุ</th>
@@ -115,32 +115,32 @@ if(isset($_REQUEST["Fl"]))
 			<tbody style='height:400px;display:block;overflow:scroll'>
 
 			<?
-				$Sql = "SELECT item.Barcode,
-                item.Item_Code,
-                item.NameTH,
-                wh_inventory.Qty,
-                item_unit.Unit_Name,
-                item.SalePrice,
-                wh_inventory.LotNo,
-                wh_inventory.MFGDate,
-                wh_inventory.EXPDate,
-                branch.Branch_Name
-                FROM item
-                INNER JOIN wh_inventory ON wh_inventory.Item_Code = item.Item_Code
-                INNER JOIN item_unit ON item_unit.Unit_Code = item.Unit_Code
-                INNER JOIN branch ON branch.Branch_Code = wh_inventory.Branch_Code
-                WHERE wh_inventory.Qty > 0";
+				$Sql = "SELECT wh_stock_transmit.DocDate,item.Barcode,
+        item.Item_Code,
+        item.NameTH,
+        wh_stock_transmit_sub.Qty,
+        item_unit.Unit_Name,
+        item.SalePrice,
+        wh_stock_transmit_sub.LotNo,
+        wh_stock_transmit_sub.MFGDate,
+        wh_stock_transmit_sub.EXPDate
+        FROM wh_stock_transmit
+        INNER JOIN wh_stock_transmit_sub ON wh_stock_transmit_sub.DocNo = wh_stock_transmit.DocNo
+        INNER JOIN item ON wh_stock_transmit_sub.Item_Code = item.Item_Code
+        INNER JOIN item_unit ON item_unit.Unit_Code = item.Unit_Code
+        WHERE wh_stock_transmit_sub.Item_Code = item.Item_Code
+        AND wh_stock_transmit_sub.Qty > 0 ";
 
                 if($Fl==1){
-                  $Sql .= " AND wh_inventory.Branch_Code = 5 ";
+                  $Sql .= " AND wh_stock_transmit.Branch_Code = 5 ";
                 }elseif ($Fl==2) {
-                  $Sql .= " AND wh_inventory.Branch_Code = 6 ";
+                  $Sql .= " AND wh_stock_transmit.Branch_Code = 6 ";
                 }else {
-                  $Sql .= " AND wh_inventory.Branch_Code = 3 ";
+                  $Sql .= " AND wh_stock_transmit.Branch_Code = 3 ";
                 }
 
 
-                $Sql .= " ORDER BY branch.Branch_Code,item.NameTH ASC";
+                $Sql .= " ORDER BY wh_stock_transmit.DocDate DESC LIMIT 100";
 						          //var_dump($Sql);
 				$row = 1;
 				$meQuery = mysql_query( $Sql );
