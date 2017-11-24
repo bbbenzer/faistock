@@ -102,6 +102,7 @@ if(isset($_REQUEST["Fl"]))
 			<thead style='display:block;'>
 				<tr class="ui-bar-d">
            <th  style="vertical-align: middle;" width="50px" data-priority="2">ลำดับ</th>
+					 <th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่รับ</th>
            <th  style="vertical-align: middle;" width="150px" data-priority="2">Barcode</th>
 					 <th  style="vertical-align: middle;" width="600px" data-priority="2">รายการสินค้า</th>
            <th  style="vertical-align: middle;" width="100px" data-priority="2">หน่วยนับ</th>
@@ -148,8 +149,13 @@ if(isset($_REQUEST["Fl"]))
 			?>
 				<tr>
 					<td style="vertical-align: middle;" width="50px"><?=$row?></td>
+					<td style="vertical-align: middle;" width="100px"><?=$Result["DocDate"]?></td>
           <td style="vertical-align: middle;" width="150px"><?=$Result["Barcode"]?></td>
+					<?php if($Result["DocDate"]==$eDate) { ?>
+					<td style="vertical-align: middle;" width="600px"><font color="#ff8929"><b><?=$Result["NameTH"]?></b></font></td>
+				<?php }else { ?>
 					<td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
+					<?php } ?>
           <td style="vertical-align: middle;" width="100px"><?=$Result["Unit_Name"]?></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["SalePrice"]?></td>
 					<td style="vertical-align: middle;" width="150px"><?=(int)$Result["Qty"]?></td>

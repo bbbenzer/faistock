@@ -78,6 +78,7 @@ if(isset($_REQUEST["Fl"]))
 			<thead>
 				<tr>
           <th  style="vertical-align: middle;" width="50px" data-priority="2">ลำดับ</th>
+					<th  style="vertical-align: middle;" width="100px" data-priority="2">วันที่รับ</th>
           <th  style="vertical-align: middle;" width="150px" data-priority="2">Barcode</th>
           <th  style="vertical-align: middle;" width="600px" data-priority="2">รายการสินค้า</th>
           <th  style="vertical-align: middle;" width="100px" data-priority="2">หน่วยนับ</th>
@@ -124,6 +125,7 @@ if(isset($_REQUEST["Fl"]))
     ?>
       <tr>
         <td style="vertical-align: middle;" width="50px"><?=$row?></td>
+				<td style="vertical-align: middle;" width="100px"><?=$Result["DocDate"]?></td>
         <td style="vertical-align: middle;" width="150px"><?=$Result["Barcode"]?></td>
         <td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
         <td style="vertical-align: middle;" width="100px"><?=$Result["Unit_Name"]?></td>

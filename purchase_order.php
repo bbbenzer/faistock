@@ -146,7 +146,11 @@ if(isset($_REQUEST["Fl"]))
 					<td style="vertical-align: middle;" width="50px"><?=$row?></td>
 					<td style="vertical-align: middle;" width="100px"><?=$Result["DocDate"]?></td>
           <td style="vertical-align: middle;" width="150px"><?=$Result["Barcode"]?></td>
+					<?php if($Result["DocDate"]==$eDate) { ?>
+					<td style="vertical-align: middle;" width="600px"><font color="#ff8929"><b><?=$Result["NameTH"]?></b></font></td>
+				<?php }else { ?>
 					<td style="vertical-align: middle;" width="600px"><b><?=$Result["NameTH"]?></b></td>
+					<?php } ?>
           <td style="vertical-align: middle;" width="100px"><?=$Result["Unit_Name"]?></td>
           <td style="vertical-align: middle;" width="100px"><?=$Result["SalePrice"]?></td>
 					<td style="vertical-align: middle;" width="150px"><?=(int)$Result["Qty"]?></td>
